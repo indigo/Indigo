@@ -1,0 +1,21 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/World/World.cs">
+    <Files>
+      <File FileName="Assets/Scripts/MapGenerator.cs" Line="44" Column="64" />
+      <File FileName="Assets/Scripts/MapDisplay.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/TextureGenerator.cs" Line="12" Column="1" />
+      <File FileName="Assets/Scripts/Noise.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/World/Renderer/MarchRenderer.cs" Line="6" Column="13" />
+      <File FileName="Assets/Scripts/World/World.cs" Line="110" Column="27" />
+      <File FileName="Assets/Scripts/Tools/Grid.cs" Line="95" Column="4" />
+      <File FileName="Assets/Scripts/World/Generator/SimplexNoise.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/World/Generator/TerrainGenerator.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/World/ChunkObject.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

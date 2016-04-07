@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Plugins/Catlike Coding/NumberFlow Free/Examples/Terrain/Terrain.unity
+  isLoaded: 1
+  isActive: 1
