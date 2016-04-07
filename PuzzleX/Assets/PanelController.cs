@@ -14,25 +14,38 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	public int width;
 	public int height;
 	private Rect rect;
+    private Rect worldRect;
+    private Vector3[] corners;
+
 	private int cellWidth;
 	private int cellHeight;
 
 	public void Start(){
 		Image image = GetComponent<Image>();
+        Rect parentRect = transform.parent.GetComponent<Canvas>().pixelRect;
 		rect = image.GetPixelAdjustedRect();
+        corners = new Vector3[4];
+        image.rectTransform.GetWorldCorners(corners);
+        worldRect = new Rect(corners[0].x, corners[0].y, rect.width, rect.height);
 		width = width == 0 ? 1 : width;
 		height = height == 0 ? 1 : height;
 		cellWidth = (int)(rect.xMax - rect.xMin) / width;
 		cellHeight = (int)(rect.yMax - rect.yMin) / height;
-		Debug.Log(rect);
-	}
+        Debug.Log(rect);
+        Debug.Log(parentRect);
+        for (int i = 0; i < 4; i++)
+        {
+            Debug.Log(corners[i]);
+        }
+        Debug.Log(worldRect);
+    }
 
-	public void OnPointerDown(PointerEventData ped) {
+    public void OnPointerDown(PointerEventData ped) {
 		mouseDown = true;
-		clickPos = transform.position;
-		clickMousePos = Input.mousePosition - new Vector3(rect.xMin, rect.yMin,0);
-		Debug.Log ("clickPos = " + clickPos + "   clickMousePos = " + clickMousePos);
-		Debug.Log ("square = " + (int)clickMousePos.x/cellWidth + " " + (int)clickMousePos.y/cellHeight );
+		//clickPos = transform.position;
+		clickMousePos = Input.mousePosition;
+		Debug.Log ("clickMousePos = " + clickMousePos);
+		Debug.Log ("square = " + (int)(clickMousePos.x- worldRect.x)/cellWidth + " " + (int)(clickMousePos.y- worldRect.y)/cellHeight );
 	}
 
 	public void OnPointerUp(PointerEventData ped) {
