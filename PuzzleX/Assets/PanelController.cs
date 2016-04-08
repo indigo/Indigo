@@ -48,6 +48,14 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
         colMarker.sizeDelta = new Vector2(cellWidth, rect.height);
 
+        for (int i = 1; i < width; ++i)
+        {
+            Tile t = Tile.CreateTile();
+            t.transform.SetParent(columns[currentSelection]);
+
+        }
+
+
     }
 
     public void OnPointerDown(PointerEventData ped) {
