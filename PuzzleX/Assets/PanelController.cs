@@ -51,6 +51,7 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	}
 
 	public void OnDrag(PointerEventData data){
+		clickMousePos = Input.mousePosition;
 		if (currentSelection != (int)(clickMousePos.x- worldRect.x)/cellWidth){
 			currentSelection = (int)(clickMousePos.x- worldRect.x)/cellWidth;		
 			Debug.Log ("now => " + currentSelection);
