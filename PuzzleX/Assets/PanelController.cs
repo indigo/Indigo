@@ -2,13 +2,14 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler {
 
 	private Vector3 clickMousePos;
 	private Vector3 clickPos;
 	//public GameObject itemPrefab;
-	public Transform ParentPanel;
+	public RectTransform colMarker;
 
 	public int width;
 	public int height;
@@ -22,6 +23,8 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	public int currentSelection;
 	private bool selected;
 
+    private List<Transform> columns;
+
 	public void Start(){
 		Image image = GetComponent<Image>();
         Rect parentRect = transform.parent.GetComponent<Canvas>().pixelRect;
@@ -33,13 +36,18 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 		height = height == 0 ? 1 : height;
 		cellWidth = (int)(rect.xMax - rect.xMin) / width;
 		cellHeight = (int)(rect.yMax - rect.yMin) / height;
-        Debug.Log(rect);
-        Debug.Log(parentRect);
-        for (int i = 0; i < 4; i++)
+
+        GameObject colPrefab = transform.GetChild(0).gameObject;
+        columns = new List<Transform>();
+        columns.Add(colPrefab.transform);
+        for (int i = 1; i < width; ++i)
         {
-            Debug.Log(corners[i]);
+            Transform t = GameObject.Instantiate(colPrefab).transform;
+            columns.Add(t);
+            t.SetParent(transform);
         }
-        Debug.Log(worldRect);
+        colMarker.sizeDelta = new Vector2(cellWidth, rect.height);
+
     }
 
     public void OnPointerDown(PointerEventData ped) {
@@ -52,10 +60,16 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
 	public void OnDrag(PointerEventData data){
 		clickMousePos = Input.mousePosition;
-		if (currentSelection != (int)(clickMousePos.x- worldRect.x)/cellWidth){
-			currentSelection = (int)(clickMousePos.x- worldRect.x)/cellWidth;		
+        int savedSelection = (int)((clickMousePos.x - worldRect.x) / cellWidth);
+		if (currentSelection != savedSelection) { 
+            currentSelection = savedSelection;
+            if (savedSelection >= width) currentSelection = width - 1;
+            if (savedSelection < 0) currentSelection = 0;
 			Debug.Log ("now => " + currentSelection);
+
+            colMarker.position = new Vector3(columns[currentSelection].transform.position.x,0,0);
 		}
+
 	}
 
 	public void OnPointerUp(PointerEventData ped) {

@@ -69,9 +69,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ColMarker.cs" />
+    <Compile Include="Assets\ColorManager.cs" />
     <Compile Include="Assets\InputController.cs" />
     <Compile Include="Assets\MatrixController.cs" />
     <Compile Include="Assets\PanelController.cs" />
+    <Compile Include="Assets\Tile.cs" />
+    <Compile Include="Assets\TileFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
