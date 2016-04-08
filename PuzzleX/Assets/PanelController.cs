@@ -3,12 +3,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
+public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler {
 
 	private Vector3 clickMousePos;
 	private Vector3 clickPos;
-	private bool mouseDown;
-	public GameObject itemPrefab;
+	//public GameObject itemPrefab;
 	public Transform ParentPanel;
 
 	public int width;
@@ -19,6 +18,9 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
 	private int cellWidth;
 	private int cellHeight;
+
+	public int currentSelection;
+	private bool selected;
 
 	public void Start(){
 		Image image = GetComponent<Image>();
@@ -41,19 +43,22 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     }
 
     public void OnPointerDown(PointerEventData ped) {
-		mouseDown = true;
-		//clickPos = transform.position;
+		selected = true;
 		clickMousePos = Input.mousePosition;
-		Debug.Log ("clickMousePos = " + clickMousePos);
-		Debug.Log ("square = " + (int)(clickMousePos.x- worldRect.x)/cellWidth + " " + (int)(clickMousePos.y- worldRect.y)/cellHeight );
+		currentSelection = (int)(clickMousePos.x- worldRect.x)/cellWidth;
+		//Debug.Log ("clickMousePos = " + clickMousePos);
+		Debug.Log ("currentSelection => " + currentSelection);
+	}
+
+	public void OnDrag(PointerEventData data){
+		if (currentSelection != (int)(clickMousePos.x- worldRect.x)/cellWidth){
+			currentSelection = (int)(clickMousePos.x- worldRect.x)/cellWidth;		
+			Debug.Log ("now => " + currentSelection);
+		}
 	}
 
 	public void OnPointerUp(PointerEventData ped) {
-		/*
-		mouseDown = false;
-		GameObject newItem = Instantiate(itemPrefab) as GameObject;
-		newItem.transform.SetParent(ParentPanel, false);
-		newItem.transform.localScale = new Vector3(1,1,1);
-		newItem.transform.position = new Vector3(clickMousePos.x, clickMousePos.y, 0); */
+		selected = false;
+		Debug.Log ("dropping => " + currentSelection);
 	}
 }
