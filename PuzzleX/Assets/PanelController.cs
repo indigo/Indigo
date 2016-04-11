@@ -26,8 +26,11 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     private List<Transform> columns;
 
 	public void Start(){
-		Image image = GetComponent<Image>();
-        Rect parentRect = transform.parent.GetComponent<Canvas>().pixelRect;
+        SelectColumn(false);
+
+        Image image = GetComponent<Image>();
+
+        //Rect parentRect = transform.parent.GetComponent<Canvas>().pixelRect;
 		rect = image.GetPixelAdjustedRect();
         corners = new Vector3[4];
         image.rectTransform.GetWorldCorners(corners);
@@ -46,42 +49,51 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             columns.Add(t);
             t.SetParent(transform);
         }
-        colMarker.sizeDelta = new Vector2(cellWidth, rect.height);
+        colMarker.sizeDelta = new Vector2(cellWidth, colMarker.sizeDelta.y);
 
         for (int i = 1; i < width; ++i)
         {
             Tile t = Tile.CreateTile();
             t.transform.SetParent(columns[currentSelection]);
-
         }
-
 
     }
 
     public void OnPointerDown(PointerEventData ped) {
-		selected = true;
+		//selected = true;
+        SelectColumn(true);
 		clickMousePos = Input.mousePosition;
 		currentSelection = (int)(clickMousePos.x- worldRect.x)/cellWidth;
+        UpdateColMarker(currentSelection);
 		//Debug.Log ("clickMousePos = " + clickMousePos);
 		Debug.Log ("currentSelection => " + currentSelection);
 	}
 
 	public void OnDrag(PointerEventData data){
 		clickMousePos = Input.mousePosition;
-        int savedSelection = (int)((clickMousePos.x - worldRect.x) / cellWidth);
-		if (currentSelection != savedSelection) { 
-            currentSelection = savedSelection;
-            if (savedSelection >= width) currentSelection = width - 1;
-            if (savedSelection < 0) currentSelection = 0;
-			Debug.Log ("now => " + currentSelection);
+        int desiredSelection = (int)((clickMousePos.x - worldRect.x) / cellWidth);
+        if (currentSelection != desiredSelection)
+        {
+            UpdateColMarker(desiredSelection);
+        }
+    }
 
-            colMarker.position = new Vector3(columns[currentSelection].transform.position.x,0,0);
-		}
+    private void UpdateColMarker(int desiredSelection) {
+            currentSelection = desiredSelection;
+            if (desiredSelection >= width) currentSelection = width - 1;
+            if (desiredSelection < 0) currentSelection = 0;
+            Debug.Log("now => " + currentSelection);
+            colMarker.position = new Vector3(columns[currentSelection].transform.position.x, colMarker.position.y, 0);
+    }
 
-	}
+    private void SelectColumn(bool b) {
+        colMarker.gameObject.SetActive(b);
+        selected = b;
+    }
 
 	public void OnPointerUp(PointerEventData ped) {
-		selected = false;
+        //selected = false;
+        SelectColumn(false);
 		Debug.Log ("dropping => " + currentSelection);
 	}
 }
