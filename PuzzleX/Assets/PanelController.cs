@@ -9,8 +9,9 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 	private Vector3 clickMousePos;
 	private Vector3 clickPos;
 	//public GameObject itemPrefab;
-	public RectTransform colMarker;
 
+    // visual references
+	public RectTransform colMarker;
 	public int width;
 	public int height;
 	private Rect rect;
@@ -22,6 +23,7 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
 	public int currentSelection;
 	private bool selected;
+    private List<Tile> tilesInHand;
 
     private List<Transform> columns;
 
@@ -29,6 +31,14 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         SelectColumn(false);
 
         Image image = GetComponent<Image>();
+        tilesInHand = new List<Tile>();
+        // Pop last
+        //tilesInHand[ tilesInHand.Count - 1];
+        //tilesInHand.RemoveAt(tilesInHand.Count - 1);
+        // Push First
+        //tilesInHand.Insert(0,item)
+        //Push Last
+        //tilesInHand.Add(item);
 
         //Rect parentRect = transform.parent.GetComponent<Canvas>().pixelRect;
 		rect = image.GetPixelAdjustedRect();
@@ -40,7 +50,9 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 		cellWidth = (int)(rect.xMax - rect.xMin) / width;
 		cellHeight = (int)(rect.yMax - rect.yMin) / height;
 
+        // creates columns
         GameObject colPrefab = transform.GetChild(0).gameObject;
+        colPrefab.GetComponent<LayoutElement>().preferredWidth = cellWidth;
         columns = new List<Transform>();
         columns.Add(colPrefab.transform);
         for (int i = 1; i < width; ++i)
@@ -51,6 +63,8 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
         colMarker.sizeDelta = new Vector2(cellWidth, colMarker.sizeDelta.y);
 
+
+        // Test tiles
         for (int i = 1; i < width; ++i)
         {
             Tile t = Tile.CreateTile();
@@ -86,6 +100,7 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             colMarker.position = new Vector3(columns[currentSelection].transform.position.x, colMarker.position.y, 0);
     }
 
+    // only visual
     private void SelectColumn(bool b) {
         colMarker.gameObject.SetActive(b);
         selected = b;
@@ -96,4 +111,14 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         SelectColumn(false);
 		Debug.Log ("dropping => " + currentSelection);
 	}
+
+    private void GetTiles(int column)
+    {
+
+    }
+    private void DropTiles(int column)
+    {
+
+    }
+
 }

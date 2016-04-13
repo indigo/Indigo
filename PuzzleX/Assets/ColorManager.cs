@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ColorManager : MonoBehaviour {
 
+    public static ColorManager Instance;
+
     public Color c0;
     public Color c1;
     public Color c2;
@@ -12,8 +14,8 @@ public class ColorManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-	
-	}
+        Instance = this;
+    }
 	
 	// Update is called once per frame
 	void Update () {
