@@ -21,4 +21,29 @@ public class ColorManager : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public Color GetColor(int i) {
+        Color result = new Color();
+        switch (i)
+        {
+            case 0:
+                result = c0;
+                break;
+            case 1:
+                result = c1;
+                break;
+            case 2:
+                result = c2;
+                break;
+            case 3:
+                result = c3;
+                break;
+            case 4:
+                result = c4;
+                break;
+        }
+        return result;
+    }
+
+
 }

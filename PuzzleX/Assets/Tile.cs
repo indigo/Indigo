@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
 public class Tile : MonoBehaviour {
     //public GameObject prefab;
     static int Count = 0;
@@ -21,8 +22,20 @@ public class Tile : MonoBehaviour {
     }
 
     public void Start() {
-        Image theImage = GetComponent<Image>();
-        theImage.color = ColorManager.Instance.c3;
+        type = Random.Range(1, 5);
+        SetColor(ColorManager.Instance.GetColor(type));
     }
 
+    public void SetColor(Color c) {
+        Image theImage = GetComponent<Image>();
+        theImage.color = c;
+    }
+    public void SetSelected(bool b) {
+        // false makes it a bit transparent
+        Image theImage = GetComponent<Image>();
+        Color32 savedColor = theImage.color;
+        byte alphaValue = 255;
+        if (b) { alphaValue = 120; }
+        theImage.color = new Color32(savedColor.r,savedColor.g, savedColor.b,alphaValue);
+    }
 }
