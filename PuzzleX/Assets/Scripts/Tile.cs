@@ -13,11 +13,12 @@ public class Tile : MonoBehaviour {
 
     //private 
 
-    public static Tile CreateTile() {
+	public static Tile CreateTile(int height) {
         GameObject prefab = Resources.Load("Tile") as GameObject;
         Tile t =Instantiate<GameObject>(prefab).GetComponent<Tile>();
         Count++;
-        t.text = "" + Count; 
+        t.text = "" + Count;
+		t.GetComponent<LayoutElement>().preferredHeight = height;
         return t;
     }
 

@@ -50,8 +50,8 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         worldRect = new Rect(corners[0].x, corners[0].y, rect.width, rect.height);
         width = width == 0 ? 1 : width;
         height = height == 0 ? 1 : height;
-        cellWidth = (int)(rect.xMax - rect.xMin) / width;
-        cellHeight = (int)(rect.yMax - rect.yMin) / height;
+		cellWidth = cellHeight = (int)(rect.xMax - rect.xMin) / width;
+        //cellHeight = (int)(rect.yMax - rect.yMin) / height;
         colMarker.sizeDelta = new Vector2(cellWidth, colMarker.sizeDelta.y);
 
         // creates columns
@@ -75,7 +75,7 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         {
             for (int j = 0; j < width; ++j)
             {
-                Tile tile = Tile.CreateTile();
+				Tile tile = Tile.CreateTile(cellWidth);
                 tile.transform.SetParent(columns[i]);
             }
         }
