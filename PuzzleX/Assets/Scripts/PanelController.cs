@@ -70,16 +70,25 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             t.SetParent(transform);
         }
 
-        // Populate Test tiles
-        for (int i = 0; i < width; ++i)
-        {
-            for (int j = 0; j < width; ++j)
-            {
-				Tile tile = Tile.CreateTile(cellWidth);
-                tile.transform.SetParent(columns[i]);
-            }
-        }
+		Restart ();
+
     }
+
+	public void Restart(){
+		// Populate Test tiles
+		for (int i = 0; i < width; ++i)
+		{
+			// this isn't working properly
+			for (int t = 0; t < columns [i].childCount; t++) {
+				Destroy (columns [i].GetChild (0).gameObject);
+			}
+			for (int j = 0; j < height; ++j)
+			{
+				Tile tile = Tile.CreateTile(cellWidth);
+				tile.transform.SetParent(columns[i]);
+			}
+		}	
+	}
 
     public void OnPointerDown(PointerEventData ped)
     {
@@ -116,7 +125,7 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         Debug.Log("currentSelection => " + currentSelection);
     }
-
+		
     public void OnDrag(PointerEventData data)
     {
         if (selected == false)
@@ -160,7 +169,13 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             return;
 
         SelectColumn(false);
+		Tile t;
+		for (int i = 0; i < tilesInHand.Count; i++) {
+			t = tilesInHand [i].GetComponent<Tile> ();
+			t.SetSelected (true);
+		}
 
+		InterfaceManager.Instance.AddCounter (1);
         // TODO: Get tiles in current column that match type
         // TODO: Call tile rule book
         Debug.Log("dropping => " + currentSelection);

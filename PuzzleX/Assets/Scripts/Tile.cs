@@ -9,7 +9,7 @@ public class Tile : MonoBehaviour {
 
     public string text;
     public int type;
-    public ColorManager cm;
+  //  public ColorManager cm;
 
     //private 
 
@@ -36,7 +36,7 @@ public class Tile : MonoBehaviour {
         Image theImage = GetComponent<Image>();
         Color32 savedColor = theImage.color;
         byte alphaValue = 255;
-        if (b) { alphaValue = 120; }
+        if (!b) { alphaValue = 180; }
         theImage.color = new Color32(savedColor.r,savedColor.g, savedColor.b,alphaValue);
     }
 }
