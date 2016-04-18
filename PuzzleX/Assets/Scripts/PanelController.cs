@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
+public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, ipo
 {
 
     private Vector3 clickMousePos;
@@ -15,9 +15,9 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public RectTransform colMarker;
     public int width;
     public int height;
-    private Rect rect;
-    private Rect worldRect;
-    private Vector3[] corners;
+    //private Rect rect;
+   // private Rect worldRect;
+   // private Vector3[] corners;
 
     private int cellWidth;
     private int cellHeight;
@@ -44,19 +44,18 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         //list.Add(item);
 
         // visual setup
-        rect = image.GetPixelAdjustedRect();
-        corners = new Vector3[4];
-        image.rectTransform.GetWorldCorners(corners);
-        worldRect = new Rect(corners[0].x, corners[0].y, rect.width, rect.height);
+        //rect = image.GetPixelAdjustedRect();
+        //corners = new Vector3[4];
+        //image.rectTransform.GetWorldCorners(corners);
+        //worldRect = new Rect(corners[0].x, corners[0].y, rect.width, rect.height);
         width = width == 0 ? 1 : width;
         height = height == 0 ? 1 : height;
-		cellWidth = cellHeight = (int)(rect.xMax - rect.xMin) / width;
+		//cellWidth = cellHeight = (int)(rect.xMax - rect.xMin) / width;
         //cellHeight = (int)(rect.yMax - rect.yMin) / height;
-        colMarker.sizeDelta = new Vector2(cellWidth, colMarker.sizeDelta.y);
 
-        // creates columns
+        // use the existing column to create all of them
         GameObject colPrefab = transform.GetChild(0).gameObject;
-        colPrefab.GetComponent<LayoutElement>().preferredWidth = cellWidth;
+        //colPrefab.GetComponent<LayoutElement>().preferredWidth = cellWidth;
         columns = new List<Transform>();
         for (int i = 0; i < width; ++i)
         {
@@ -67,25 +66,34 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
                 t = colPrefab.transform;
 
             columns.Add(t);
-            t.SetParent(transform);
+            t.SetParent(transform,false);
         }
 
-		Restart ();
+
+        //colPrefab.GetComponent<LayoutElement>().preferredWidth = cellWidth;
+        cellWidth = (int)(transform.GetComponent<RectTransform>().rect.width/width);
+        cellHeight = cellWidth;
+        colMarker.sizeDelta = new Vector2(cellWidth, colMarker.sizeDelta.y);
+        Debug.Log(columns[0].GetComponent<RectTransform>().rect);
+        Debug.Log(columns[0].GetComponent<RectTransform>().sizeDelta);
+        Debug.Log(transform.GetComponent<RectTransform>().rect);
+        //populate before
+        Restart();
 
     }
 
-	public void Restart(){
+    public void Restart(){
 		// Populate Test tiles
 		for (int i = 0; i < width; ++i)
 		{
 			// this isn't working properly
 			for (int t = 0; t < columns [i].childCount; t++) {
-				Destroy (columns [i].GetChild (0).gameObject);
+				Destroy (columns [i].GetChild (t).gameObject);
 			}
 			for (int j = 0; j < height; ++j)
 			{
-				Tile tile = Tile.CreateTile(cellWidth);
-				tile.transform.SetParent(columns[i]);
+				Tile tile = Tile.CreateTile(cellHeight);
+				tile.transform.SetParent(columns[i],false);
 			}
 		}	
 	}
@@ -94,7 +102,11 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     {
 
         clickMousePos = Input.mousePosition;
-        currentSelection = (int)(clickMousePos.x - worldRect.x) / cellWidth;
+        //currentSelection = (int)(clickMousePos.x - worldRect.x) / cellWidth;
+
+        for (int i = 0; i < ped.hovered.Count; i++) {
+            Debug.Log(ped.hovered[i].name);
+        }
 
         //exit if column is empty
         if (columns[currentSelection].childCount == 0)
@@ -132,7 +144,10 @@ public class PanelController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             return;
 
         clickMousePos = Input.mousePosition;
-        int desiredSelection = (int)((clickMousePos.x - worldRect.x) / cellWidth);
+
+        //int desiredSelection = (int)((clickMousePos.x - worldRect.x) / cellWidth);
+        int desiredSelection = currentSelection;
+
         if (currentSelection != desiredSelection)
         {
             UpdateColMarker(desiredSelection);
