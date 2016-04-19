@@ -10,7 +10,7 @@ public class Tile : MonoBehaviour {
     public string text;
     public int type;
   //  public ColorManager cm;
-
+	private Image theImage;
     //private 
 
 	public static Tile CreateTile(int height) {
@@ -24,16 +24,15 @@ public class Tile : MonoBehaviour {
 
     public void Start() {
         type = Random.Range(1, 5);
+		theImage = GetComponent<Image>();
         SetColor(ColorManager.Instance.GetColor(type));
     }
 
     public void SetColor(Color c) {
-        Image theImage = GetComponent<Image>();
         theImage.color = c;
     }
     public void SetSelected(bool b) {
         // false makes it a bit transparent
-        Image theImage = GetComponent<Image>();
         Color32 savedColor = theImage.color;
         byte alphaValue = 255;
         if (!b) { alphaValue = 180; }

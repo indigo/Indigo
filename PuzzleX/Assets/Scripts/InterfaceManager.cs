@@ -28,5 +28,8 @@ public class InterfaceManager : MonoBehaviour {
 		counterText.text = "" + counterValue;
 	}
 
-
+	public void ClearCounter(){
+		counterText.text = "0";
+		counterValue = 0;
+	}
 }
