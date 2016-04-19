@@ -12,7 +12,7 @@ public class InterfaceManager : MonoBehaviour {
 	private int counterValue;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		Instance = this;
 		counterValue = 0;
 		AddCounter (0);

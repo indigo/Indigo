@@ -13,7 +13,7 @@ public class ColorManager : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         Instance = this;
     }
 	
