@@ -48,6 +48,7 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 				break;
 			}
 		}
+
 		// store the tiles in hand on the panel
 		panelControllerFather.tilesInHand = tilesInHand;
 
@@ -78,9 +79,12 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 		SetHighlight (true);
 		currentColumn = this;
 		List<Tile> tilesInHand = panelControllerFather.tilesInHand;
-		for (int i = 0; i < tilesInHand.Count; i++)
+		for (int i = tilesInHand.Count - 1; i >= 0; i--)
 		{
 			tilesInHand[i].transform.SetParent(transform);
+			tilesInHand [i].columnNumber = columnNumber;
+			tilesInHand [i].textUI.text = tilesInHand.ToString();
+			tilesInHand [i].rowNumber = transform.childCount - 1;
 		}
 	}
 	public void OnPointerExit(PointerEventData ped)
