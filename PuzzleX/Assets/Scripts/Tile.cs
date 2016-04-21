@@ -63,7 +63,7 @@ public class Tile : MonoBehaviour {
 
     public void Start() {
 		panelControllerFather = GetComponentInParent<PanelController> ();
-        type = Random.Range(1, 5);
+        type = Random.Range(0, 5);
 		textUI.text = this.ToString();
 		theImage = GetComponent<Image>();
         SetColor(ColorManager.Instance.GetColor(type));
