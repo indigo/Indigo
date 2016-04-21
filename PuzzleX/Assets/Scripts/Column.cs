@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler{
 
-	PanelController panelControllerFather;
+	BoardController panelControllerFather;
 	Image theImage;
 
 	public static bool isSelected;
@@ -27,7 +27,7 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 
 	public void Start(){
 		// get the reference on the Panel controller
-		panelControllerFather = GetComponentInParent<PanelController> ();
+		panelControllerFather = GetComponentInParent<BoardController> ();
 	 	theImage = GetComponent<Image>();
 
 	}

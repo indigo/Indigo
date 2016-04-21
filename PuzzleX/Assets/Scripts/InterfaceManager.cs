@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class InterfaceManager : MonoBehaviour {
 
 
-	public static InterfaceManager Instance;
+//	public static InterfaceManager Instance;
 
 	public Text counterText;
 
@@ -16,21 +16,15 @@ public class InterfaceManager : MonoBehaviour {
 		}
 		set{ 
 			_counterValue = value;
-		}
+            counterText.text = "" + _counterValue;
+        }
 	}
 
 	// Use this for initialization
 	void Awake () {
-		Instance = this;
-		_counterValue = 0;
-		AddCounter (0);
-	}
+        counterValue = 0;          
+    }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void AddCounter(int addedValue){
 		_counterValue += addedValue;
 		counterText.text = "" + _counterValue;

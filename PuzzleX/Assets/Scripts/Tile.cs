@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Tile : MonoBehaviour {
     //public GameObject prefab;
     static int Count = 0;
-	PanelController panelControllerFather;
+	BoardController panelControllerFather;
 
 	public Text textUI;
 	private string _displayText;
@@ -62,7 +62,7 @@ public class Tile : MonoBehaviour {
     }
 
     public void Start() {
-		panelControllerFather = GetComponentInParent<PanelController> ();
+		panelControllerFather = GetComponentInParent<BoardController> ();
         type = Random.Range(0, 5);
 		textUI.text = this.ToString();
 		theImage = GetComponent<Image>();

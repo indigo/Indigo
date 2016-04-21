@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PanelController : MonoBehaviour{
+public class BoardController : MonoBehaviour{
 
     // visual references
     public int width = 1;
@@ -13,10 +13,20 @@ public class PanelController : MonoBehaviour{
     private int cellWidth;
     private int cellHeight;
 
-    public List<Tile> tilesInHand;
+    // 
+    public GameObject GameMatrix;
 
+    public GameObject Hud;
+    private InterfaceManager interfaceManager;
+    // shouldn't be public
+    public List<Tile> tilesInHand;
     private List<Transform> columns;
 
+
+
+    public void Awake() {
+        interfaceManager = Hud.GetComponent<InterfaceManager>();
+    }
 
     public void Start()
     {
@@ -24,11 +34,11 @@ public class PanelController : MonoBehaviour{
 
 		//clamp width to be > 0
 
-		cellWidth = (int)(transform.GetComponent<RectTransform>().rect.width/width);
+		cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
 		cellHeight = cellWidth;
 
 		// use the existing column to create all of them
-        GameObject colPrefab = transform.GetChild(0).gameObject;
+        GameObject colPrefab = GameMatrix.transform.GetChild(0).gameObject;
 		colPrefab.GetComponent<LayoutElement> ().preferredWidth = cellWidth;
         columns = new List<Transform>();
         for (int i = 0; i < width; ++i)
@@ -41,7 +51,7 @@ public class PanelController : MonoBehaviour{
 			}
 
             columns.Add(t);
-            t.SetParent(transform,false);
+            t.SetParent(GameMatrix.transform,false);
 			// set the column number
 			t.GetComponent<Column> ().columnNumber = i;
         }
@@ -53,22 +63,23 @@ public class PanelController : MonoBehaviour{
 		// Populate Test tiles
 		CleanColumns ();
 		yield return new WaitForEndOfFrame();
-		AddNLines (3);
-		InterfaceManager.Instance.ClearCounter ();
+		AddNInLineAtRandom (4);
+        interfaceManager.ClearCounter ();
 	}
 
 	public void OnButtonRestart(){
 		StartCoroutine (Restart ());
 	}
 
-	public void AddNLines(int qty){
+    // will throw N new blocks spread out randomly in the line, from the bottom
+	public void AddNInLineAtRandom(int qty){
 		List<int> l = new List<int> ();
 		List<int> firstInts = new List<int> ();
 		for (int k = 0; k < width; k++) {
 			firstInts.Add (k);
 		}
 		for (int k = 0; k < qty; k++) {
-			int index = Random.Range (0, width - k);
+			int index = UnityEngine.Random.Range (0, width - k);
 			l.Add (firstInts[index] );
 			firstInts.Remove (index);
 		}
@@ -78,14 +89,15 @@ public class PanelController : MonoBehaviour{
 			Tile tile = Tile.CreateTile (cellHeight);
 			tile.columnNumber = l [j];
 			tile.transform.SetParent (columns [l [j]], false);
-			tile.transform.SetAsLastSibling ();
+			tile.transform.SetAsLastSibling (); // bottom
 			tile.rowNumber = rowCount;
 			tile.RefreshDisplayText ();
 		}
 	}
 
+    // erase all tiles in each column
 	public void CleanColumns(){
-		for (int i = 0; i < width; ++i) // column
+		for (int i = 0; i < width; ++i) 
 		{
 			for (int t = 0; t < columns [i].childCount; t++) {
 				Destroy (columns [i].GetChild (t).gameObject);
@@ -102,9 +114,9 @@ public class PanelController : MonoBehaviour{
 					connectedTiles[i].FadeOut();
 				}
 			}
-			InterfaceManager.Instance.AddCounter (1);
-			if (InterfaceManager.Instance.counterValue % 1 == 0) {
-				AddNLines (4);
+			interfaceManager.AddCounter (1);
+			if (interfaceManager.counterValue % 2 == 0) {
+				AddNInLineAtRandom (5);
 			}
 		}
 
@@ -151,7 +163,7 @@ public class PanelController : MonoBehaviour{
 				openList.Add(tile);
 				result.Add (tile);
 			}
-			//right
+			//right 
 			tile = GetTileAt(currentTile.columnNumber + 1, currentTile.rowNumber);
 			if (tile != null && tile.type == currentType && !result.Contains(tile)) {
 				// add this to the openList and result
