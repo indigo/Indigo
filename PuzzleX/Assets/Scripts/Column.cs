@@ -11,9 +11,19 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 
 	public static bool isSelected;
 	private static int Counter;
-	public int columnNumber;
 
-	public static Column currentColumn;
+	private int _columnNumber;
+	public int columnNumber{
+		get{ 
+			return _columnNumber;
+		}
+		set { 
+			_columnNumber = value;
+		}
+
+	}
+
+	private static Column currentColumn;
 
 	public void Start(){
 		// get the reference on the Panel controller
@@ -83,7 +93,6 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 		{
 			tilesInHand[i].transform.SetParent(transform);
 			tilesInHand [i].columnNumber = columnNumber;
-			tilesInHand [i].textUI.text = tilesInHand.ToString();
 			tilesInHand [i].rowNumber = transform.childCount - 1;
 		}
 	}

@@ -366,7 +366,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1087808588}
-        m_MethodName: Restart
+        m_MethodName: OnButtonRestart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 7
-  height: 4
+  heightIncrement: 5
   tilesInHand: []
 --- !u!114 &1087808589
 MonoBehaviour:
@@ -868,7 +868,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 380f3f90ca6ae4d3ba40e7164bb2ac98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columnNumber: 0
 --- !u!1 &1818028208
 GameObject:
   m_ObjectHideFlags: 0

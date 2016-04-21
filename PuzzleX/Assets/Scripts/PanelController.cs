@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class PanelController : MonoBehaviour{
 
     // visual references
-    public int width;
-    public int height;
+    public int width = 1;
+    public int heightIncrement;
 
     private int cellWidth;
     private int cellHeight;
@@ -22,9 +22,7 @@ public class PanelController : MonoBehaviour{
     {
         tilesInHand = new List<Tile>();
 
-		//clamp width and height to be > 0
-        width = width == 0 ? 1 : width;
-        height = height == 0 ? 1 : height;
+		//clamp width to be > 0
 
 		cellWidth = (int)(transform.GetComponent<RectTransform>().rect.width/width);
 		cellHeight = cellWidth;
@@ -48,48 +46,77 @@ public class PanelController : MonoBehaviour{
 			t.GetComponent<Column> ().columnNumber = i;
         }
 
-
-		Restart();
+		StartCoroutine( Restart());
     }
 
-    public void Restart(){
+	IEnumerator Restart(){
 		// Populate Test tiles
+		CleanColumns ();
+		yield return new WaitForEndOfFrame();
+		AddNLines (3);
+		InterfaceManager.Instance.ClearCounter ();
+	}
+
+	public void OnButtonRestart(){
+		StartCoroutine (Restart ());
+	}
+
+	public void AddNLines(int qty){
+		List<int> l = new List<int> ();
+		List<int> firstInts = new List<int> ();
+		for (int k = 0; k < width; k++) {
+			firstInts.Add (k);
+		}
+		for (int k = 0; k < qty; k++) {
+			int index = Random.Range (0, width - k);
+			l.Add (firstInts[index] );
+			firstInts.Remove (index);
+		}
+
+		for (int j = 0 ; j < qty  ; ++j){
+			int rowCount = columns [ l[j] ].childCount;
+			Tile tile = Tile.CreateTile (cellHeight);
+			tile.columnNumber = l [j];
+			tile.transform.SetParent (columns [l [j]], false);
+			tile.transform.SetAsLastSibling ();
+			tile.rowNumber = rowCount;
+			tile.RefreshDisplayText ();
+		}
+	}
+
+	public void CleanColumns(){
 		for (int i = 0; i < width; ++i) // column
 		{
 			for (int t = 0; t < columns [i].childCount; t++) {
 				Destroy (columns [i].GetChild (t).gameObject);
 			}
-			for (int j = 0; j < height; ++j)
-			{
-				Tile tile = Tile.CreateTile(cellHeight);
-				tile.columnNumber = i;
-				tile.rowNumber = j;
-				tile.transform.SetParent(columns[i],false);
-			}
-		}	
-		InterfaceManager.Instance.ClearCounter ();
+		}
 	}
 
 	public void OnDrop(Column sourceColumn, Column destColumn){
-		//Debug.Log(a
 		if (sourceColumn != destColumn) {
+			List<Tile> connectedTiles = GetConnectedTiles (destColumn);
+			if (connectedTiles.Count >= 3){
+				for (int i = 0; i < connectedTiles.Count; i++) {
+					//DestroyTile (connectedTiles [i]);
+					connectedTiles[i].FadeOut();
+				}
+			}
 			InterfaceManager.Instance.AddCounter (1);
-		}
-		List<Tile> connectedTiles = GetConnectedTiles (destColumn);
-		if (connectedTiles.Count >= 3){
-			for (int i = 0; i < connectedTiles.Count; i++) {
-				RefreshTiles (connectedTiles [i]);
-				Destroy (connectedTiles [i].gameObject);
+			if (InterfaceManager.Instance.counterValue % 1 == 0) {
+				AddNLines (4);
 			}
 		}
+
 	}
 
-	public void RefreshTiles (Tile t){
+	// when you plan to delete a Tile, there is some cleaning to be performed
+	public void DestroyTile (Tile t){
 		int c = t.columnNumber;
-		for (int i = t.rowNumber ; i< columns[c].childCount ; i++ ){
+		for (int i = t.rowNumber + 1 ; i < columns[c].childCount ; i++ ){
 			columns[c].GetChild(i).GetComponent<Tile>().rowNumber--;
-			columns [c].GetChild (i).GetComponent<Tile> ().textUI.text = columns [c].GetChild (i).GetComponent<Tile> ().ToString ();
 		}
+		Destroy (t.gameObject);
 	}
 
 
@@ -143,9 +170,12 @@ public class PanelController : MonoBehaviour{
 		return result;
 	}
 
+	public void OnFadeOutComplete(){
+	
+	}
+
 	private Tile GetTileAt(int column, int index){
 		if (column < 0 || column >= columns.Count || index < 0) {
-			Debug.Log ("out : " + column + " index: " + index);
 			return null;
 		}
 		Column c = columns [column].GetComponent<Column>();

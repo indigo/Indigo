@@ -9,12 +9,20 @@ public class InterfaceManager : MonoBehaviour {
 
 	public Text counterText;
 
-	private int counterValue;
+	private int _counterValue;
+	public int counterValue{
+		get{ 
+			return _counterValue;
+		}
+		set{ 
+			_counterValue = value;
+		}
+	}
 
 	// Use this for initialization
 	void Awake () {
 		Instance = this;
-		counterValue = 0;
+		_counterValue = 0;
 		AddCounter (0);
 	}
 	
@@ -24,12 +32,12 @@ public class InterfaceManager : MonoBehaviour {
 	}
 
 	public void AddCounter(int addedValue){
-		counterValue += addedValue;
-		counterText.text = "" + counterValue;
+		_counterValue += addedValue;
+		counterText.text = "" + _counterValue;
 	}
 
 	public void ClearCounter(){
 		counterText.text = "0";
-		counterValue = 0;
+		_counterValue = 0;
 	}
 }
