@@ -63,7 +63,7 @@ public class BoardController : MonoBehaviour{
 		// Populate Test tiles
 		CleanColumns ();
 		yield return new WaitForEndOfFrame();
-		AddNInLineAtRandom (4);
+		StartCoroutine( AddNInLineAtRandom (4));
         interfaceManager.ClearCounter ();
 	}
 
@@ -72,7 +72,7 @@ public class BoardController : MonoBehaviour{
 	}
 
     // will throw N new blocks spread out randomly in the line, from the bottom
-	public void AddNInLineAtRandom(int qty){
+	public IEnumerator AddNInLineAtRandom(int qty){
 		List<int> l = new List<int> ();
 		List<int> firstInts = new List<int> ();
 		for (int k = 0; k < width; k++) {
@@ -92,7 +92,8 @@ public class BoardController : MonoBehaviour{
 			tile.transform.SetAsLastSibling (); // bottom
 			tile.rowNumber = rowCount;
 			tile.RefreshDisplayText ();
-		}
+            yield return new WaitForSeconds(.02f);
+        }
 	}
 
     // erase all tiles in each column
@@ -105,18 +106,19 @@ public class BoardController : MonoBehaviour{
 		}
 	}
 
-	public void OnDrop(Column sourceColumn, Column destColumn){
+	public IEnumerator OnDrop(Column sourceColumn, Column destColumn){
 		if (sourceColumn != destColumn) {
-			List<Tile> connectedTiles = GetConnectedTiles (destColumn);
+			List<Tile> connectedTiles = GetConnectedTiles (destColumn.transform.GetChild(destColumn.transform.childCount - 1).GetComponent<Tile>());
 			if (connectedTiles.Count >= 3){
 				for (int i = 0; i < connectedTiles.Count; i++) {
 					//DestroyTile (connectedTiles [i]);
 					connectedTiles[i].FadeOut();
-				}
+                    yield return new WaitForSeconds(.02f);
+                }
 			}
 			interfaceManager.AddCounter (1);
-			if (interfaceManager.counterValue % 2 == 0) {
-				AddNInLineAtRandom (5);
+			if (interfaceManager.counterValue % 1 == 0) {
+				StartCoroutine( AddNInLineAtRandom (5));
 			}
 		}
 
@@ -131,12 +133,12 @@ public class BoardController : MonoBehaviour{
 		Destroy (t.gameObject);
 	}
 
-
 	// given a Column, returns all connected tiles in all directions but not diagonals
-	public List<Tile> GetConnectedTiles(Column a){
+    // should be a tile instead of a column
+	public List<Tile> GetConnectedTiles(Tile t){
 		List<Tile> result = new List<Tile> ();
 		List<Tile> openList = new List<Tile> ();
-		int columnIndex = a.columnNumber;
+		int columnIndex = t.columnNumber;
 		Tile currentTile = columns [columnIndex].GetChild (columns [columnIndex].childCount - 1).GetComponent<Tile>();
 		// type is type of top of column
 		int currentType = currentTile.type;
