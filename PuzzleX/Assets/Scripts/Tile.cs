@@ -64,7 +64,8 @@ public class Tile : MonoBehaviour {
     public void Start() {
 		panelControllerFather = GetComponentInParent<BoardController> ();
         type = Random.Range(0, 5);
-		textUI.text = this.ToString();
+        //textUI.text = this.type;
+        RefreshDisplayText();
 		theImage = GetComponent<Image>();
         SetColor(ColorManager.Instance.GetColor(type));
 
@@ -83,11 +84,10 @@ public class Tile : MonoBehaviour {
 
 	public void RefreshDisplayText(){
 		displayText = ""+ columnNumber + " " + rowNumber;
-		textUI.text = "";//displayText;
+		textUI.text = displayText;
 	}
 
 	public void FadeOut(){
-		Debug.Log ("fade ?");
 		iTween.FadeTo(gameObject,iTween.Hash("alpha",0f,"time",.2f, "oncomplete", "FadeOutComplete"));
 	}
 

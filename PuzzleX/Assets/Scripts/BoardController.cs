@@ -78,21 +78,22 @@ public class BoardController : MonoBehaviour{
 		for (int k = 0; k < width; k++) {
 			firstInts.Add (k);
 		}
-		for (int k = 0; k < qty; k++) {
-			int index = UnityEngine.Random.Range (0, width - k);
-			l.Add (firstInts[index] );
-			firstInts.Remove (index);
-		}
-
-		for (int j = 0 ; j < qty  ; ++j){
+        for (int k = 0; k < qty; k++)
+        {
+            int index = UnityEngine.Random.Range(0, width - k);
+            l.Add(firstInts[index]);
+            firstInts.RemoveAt(index);
+        }
+        l.Sort();
+        for (int j = 0 ; j < qty  ; ++j){
 			int rowCount = columns [ l[j] ].childCount;
 			Tile tile = Tile.CreateTile (cellHeight);
 			tile.columnNumber = l [j];
 			tile.transform.SetParent (columns [l [j]], false);
 			tile.transform.SetAsLastSibling (); // bottom
 			tile.rowNumber = rowCount;
-			tile.RefreshDisplayText ();
-            yield return new WaitForSeconds(.02f);
+			//tile.RefreshDisplayText ();
+            yield return new WaitForSeconds(.2f);
         }
 	}
 
