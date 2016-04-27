@@ -63,7 +63,8 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 		panelControllerFather.tilesInHand = tilesInHand;
 
 	}
-		
+	
+    // this is a Drop
 	public void OnPointerUp(PointerEventData ped)
 	{
 		// exit if nothing is selected
@@ -94,6 +95,7 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 			tilesInHand[i].transform.SetParent(transform);
 			tilesInHand [i].columnNumber = columnNumber;
 			tilesInHand [i].rowNumber = transform.childCount - 1;
+            tilesInHand[i].RefreshDisplayText();
 		}
 	}
 	public void OnPointerExit(PointerEventData ped)

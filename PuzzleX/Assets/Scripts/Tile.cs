@@ -84,7 +84,7 @@ public class Tile : MonoBehaviour {
 
 	public void RefreshDisplayText(){
 		displayText = ""+ columnNumber + " " + rowNumber;
-		textUI.text = displayText;
+		//textUI.text = displayText;
 	}
 
 	public void FadeOut(){

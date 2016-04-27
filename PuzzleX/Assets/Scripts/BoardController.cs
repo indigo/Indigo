@@ -86,16 +86,19 @@ public class BoardController : MonoBehaviour{
         }
         l.Sort();
         for (int j = 0 ; j < qty  ; ++j){
-			int rowCount = columns [ l[j] ].childCount;
-			Tile tile = Tile.CreateTile (cellHeight);
-			tile.columnNumber = l [j];
-			tile.transform.SetParent (columns [l [j]], false);
-			tile.transform.SetAsLastSibling (); // bottom
-			tile.rowNumber = rowCount;
-			//tile.RefreshDisplayText ();
+            AddOneInColumn(l[j]);
             yield return new WaitForSeconds(.2f);
         }
 	}
+
+    public void AddOneInColumn(int column) {
+        Tile tile = Tile.CreateTile(cellHeight);
+        tile.rowNumber = columns[column].childCount;
+        tile.columnNumber = column;
+        tile.transform.SetParent(columns[column], false);
+        tile.transform.SetAsLastSibling(); // bottom
+        
+    }
 
     // erase all tiles in each column
 	public void CleanColumns(){
@@ -119,7 +122,7 @@ public class BoardController : MonoBehaviour{
 			}
 			interfaceManager.AddCounter (1);
 			if (interfaceManager.counterValue % 1 == 0) {
-				StartCoroutine( AddNInLineAtRandom (5));
+				StartCoroutine( AddNInLineAtRandom (4));
 			}
 		}
 
@@ -129,8 +132,10 @@ public class BoardController : MonoBehaviour{
 	public void DestroyTile (Tile t){
 		int c = t.columnNumber;
 		for (int i = t.rowNumber + 1 ; i < columns[c].childCount ; i++ ){
-			columns[c].GetChild(i).GetComponent<Tile>().rowNumber--;
-		}
+            Tile upperTile = columns[c].GetChild(i).GetComponent<Tile>();
+            upperTile.rowNumber--;
+            upperTile.RefreshDisplayText();
+        }
 		Destroy (t.gameObject);
 	}
 
