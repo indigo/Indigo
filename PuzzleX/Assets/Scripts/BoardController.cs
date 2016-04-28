@@ -8,8 +8,9 @@ public class BoardController : MonoBehaviour{
 
     // visual references
     public int width = 1;
-    public int heightIncrement;
+    public int heightMatrix;
 
+    public Transform bg;
     private int cellWidth;
     private int cellHeight;
 
@@ -22,7 +23,7 @@ public class BoardController : MonoBehaviour{
     public List<Tile> tilesInHand;
     private List<Transform> columns;
 
-
+    
 
     public void Awake() {
         interfaceManager = Hud.GetComponent<InterfaceManager>();
@@ -36,8 +37,9 @@ public class BoardController : MonoBehaviour{
 
 		cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
 		cellHeight = cellWidth;
-
-		// use the existing column to create all of them
+        bg.GetComponent<RectTransform>().sizeDelta = new Vector2(0, cellHeight* heightMatrix + 10);
+        Debug.Log(bg.GetComponent<RectTransform>().sizeDelta);
+        // use the existing column to create all of them
         GameObject colPrefab = GameMatrix.transform.GetChild(0).gameObject;
 		colPrefab.GetComponent<LayoutElement> ().preferredWidth = cellWidth;
         columns = new List<Transform>();
@@ -94,14 +96,21 @@ public class BoardController : MonoBehaviour{
     public void AddOneInColumn(int column) {
         Tile tile = Tile.CreateTile(cellHeight);
         tile.rowNumber = columns[column].childCount;
-        tile.columnNumber = column;
-        tile.transform.SetParent(columns[column], false);
-        tile.transform.SetAsLastSibling(); // bottom
-        
+
+        if (tile.rowNumber > heightMatrix - 1)
+        {
+            Debug.Log("Death on Add with type : " + tile.type);
+            StartCoroutine(OnColorTouchDeath(tile.type));
+            return;
+        }
+            tile.columnNumber = column;
+            tile.transform.SetParent(columns[column], false);
+            tile.transform.SetAsLastSibling(); // bottom
+
     }
 
     // erase all tiles in each column
-	public void CleanColumns(){
+    public void CleanColumns(){
 		for (int i = 0; i < width; ++i) 
 		{
 			for (int t = 0; t < columns [i].childCount; t++) {
@@ -110,12 +119,21 @@ public class BoardController : MonoBehaviour{
 		}
 	}
 
+    public IEnumerator OnColorTouchDeath(int type) {
+        List<Tile> tilesOfType = getTilesOfType(type);
+        // should delete the tiles in hand too
+        for (int i = 0; i < tilesOfType.Count; i++) {
+            DestroyTile(tilesOfType[i]);
+            yield return 0;
+        }
+        interfaceManager.ClearCounter();
+    }
+
 	public IEnumerator OnDrop(Column sourceColumn, Column destColumn){
 		if (sourceColumn != destColumn) {
 			List<Tile> connectedTiles = GetConnectedTiles (destColumn.transform.GetChild(destColumn.transform.childCount - 1).GetComponent<Tile>());
 			if (connectedTiles.Count >= 3){
 				for (int i = 0; i < connectedTiles.Count; i++) {
-					//DestroyTile (connectedTiles [i]);
 					connectedTiles[i].FadeOut();
                     yield return new WaitForSeconds(.02f);
                 }
@@ -189,6 +207,19 @@ public class BoardController : MonoBehaviour{
 		}
 		return result;
 	}
+
+    public List<Tile> getTilesOfType(int type) {
+        List<Tile> result = new List<Tile>();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < columns[i].childCount; j++) {
+                Tile t = columns[i].GetChild(j).GetComponent<Tile>();
+                if (t.type == type) {
+                    result.Add(t);
+                }
+            }
+        }
+        return result;
+    }
 
 	public void OnFadeOutComplete(){
 	

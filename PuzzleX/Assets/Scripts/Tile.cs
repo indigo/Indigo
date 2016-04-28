@@ -58,12 +58,12 @@ public class Tile : MonoBehaviour {
         Count++;
 		t.textUI.text = "" ;
 		t.GetComponent<LayoutElement>().preferredHeight = height;
+        t.type = Random.Range(0, 5);
         return t;
     }
 
     public void Start() {
 		panelControllerFather = GetComponentInParent<BoardController> ();
-        type = Random.Range(0, 5);
         //textUI.text = this.type;
         RefreshDisplayText();
 		theImage = GetComponent<Image>();
@@ -76,10 +76,13 @@ public class Tile : MonoBehaviour {
     }
     public void SetSelected(bool b) {
         // false makes it a bit transparent
-        Color32 savedColor = theImage.color;
-        byte alphaValue = 255;
-        if (!b) { alphaValue = 180; }
-        theImage.color = new Color32(savedColor.r,savedColor.g, savedColor.b,alphaValue);
+        if (theImage != null)
+        {
+            Color32 savedColor = theImage.color;
+            byte alphaValue = 255;
+            if (!b) { alphaValue = 180; }
+            theImage.color = new Color32(savedColor.r, savedColor.g, savedColor.b, alphaValue);
+        }
     }
 
 	public void RefreshDisplayText(){

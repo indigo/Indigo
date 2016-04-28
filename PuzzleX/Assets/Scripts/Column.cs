@@ -90,7 +90,12 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 		SetHighlight (true);
 		currentColumn = this;
 		List<Tile> tilesInHand = panelControllerFather.tilesInHand;
-		for (int i = tilesInHand.Count - 1; i >= 0; i--)
+        if (tilesInHand.Count + transform.childCount > panelControllerFather.heightMatrix ) {
+            Debug.Log("Death with type : "+ tilesInHand[0].type + " from OnPointerEnter");
+            StartCoroutine(panelControllerFather.OnColorTouchDeath(tilesInHand[0].type));
+            return;
+        }
+        for (int i = tilesInHand.Count - 1; i >= 0; i--)
 		{
 			tilesInHand[i].transform.SetParent(transform);
 			tilesInHand [i].columnNumber = columnNumber;
