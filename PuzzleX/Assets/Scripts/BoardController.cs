@@ -137,14 +137,18 @@ public class BoardController : MonoBehaviour{
 					connectedTiles[i].FadeOut();
                     yield return new WaitForSeconds(.02f);
                 }
-			}
-			interfaceManager.AddCounter (1);
-			if (interfaceManager.counterValue % 1 == 0) {
+                interfaceManager.AddCounter(NPremierEntier(connectedTiles.Count));
+            }
+            if (interfaceManager.counterValue % 1 == 0) {
 				StartCoroutine( AddNInLineAtRandom (4));
 			}
 		}
 
 	}
+
+    public int NPremierEntier(int n) {
+        return n * (1 + n) / 2;
+    }
 
 	// when you plan to delete a Tile, there is some cleaning to be performed
 	public void DestroyTile (Tile t){

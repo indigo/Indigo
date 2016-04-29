@@ -466,8 +466,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7832f4f5ae6465a9d525aa25abd972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 7
-  heightMatrix: 7
+  width: 8
+  heightMatrix: 14
   bg: {fileID: 1386312665}
   GameMatrix: {fileID: 1087808586}
   Hud: {fileID: 229205795}
