@@ -9,7 +9,7 @@ public class BoardController : MonoBehaviour{
     // visual references
     public int width = 1;
     public int heightMatrix;
-
+    public int spacing = 10;
     public Transform bg;
     private int cellWidth;
     private int cellHeight;
@@ -33,12 +33,13 @@ public class BoardController : MonoBehaviour{
     {
         tilesInHand = new List<Tile>();
 
-		//clamp width to be > 0
-
+        // set the whole layout
 		cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
 		cellHeight = cellWidth;
-        bg.GetComponent<RectTransform>().sizeDelta = new Vector2(0, cellHeight* heightMatrix + 10);
+        bg.GetComponent<RectTransform>().sizeDelta = new Vector2(-2*spacing, cellHeight* heightMatrix + spacing);
+        GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, cellHeight * heightMatrix + spacing);
         Debug.Log(bg.GetComponent<RectTransform>().sizeDelta);
+
         // use the existing column to create all of them
         GameObject colPrefab = GameMatrix.transform.GetChild(0).gameObject;
 		colPrefab.GetComponent<LayoutElement> ().preferredWidth = cellWidth;

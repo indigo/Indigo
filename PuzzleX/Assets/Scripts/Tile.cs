@@ -9,7 +9,9 @@ public class Tile : MonoBehaviour {
 	BoardController panelControllerFather;
 
 	public Text textUI;
-	private string _displayText;
+    public Image theImage;
+
+    private string _displayText;
 	public string displayText{
 		get { 
 			return _displayText;
@@ -30,7 +32,6 @@ public class Tile : MonoBehaviour {
 		}
 	}
   //  public ColorManager cm;
-	private Image theImage;
 
     //it s good to know x y for a Tile 
 	private int _columnNumber;
@@ -57,8 +58,10 @@ public class Tile : MonoBehaviour {
         Tile t =Instantiate<GameObject>(prefab).GetComponent<Tile>();
         Count++;
 		t.textUI.text = "" ;
-		t.GetComponent<LayoutElement>().preferredHeight = height;
+        t.GetComponent<LayoutElement>().preferredHeight = height;
+        t.GetComponent<LayoutElement>().preferredWidth = height;
         t.type = Random.Range(0, 5);
+        t.SetColor(ColorManager.Instance.GetColor(t.type));
         return t;
     }
 
@@ -66,8 +69,7 @@ public class Tile : MonoBehaviour {
 		panelControllerFather = GetComponentInParent<BoardController> ();
         //textUI.text = this.type;
         RefreshDisplayText();
-		theImage = GetComponent<Image>();
-        SetColor(ColorManager.Instance.GetColor(type));
+
 
     }
 
