@@ -38,7 +38,10 @@ public class BoardController : MonoBehaviour{
 		cellHeight = cellWidth;
         bg.GetComponent<RectTransform>().sizeDelta = new Vector2(-2*spacing, cellHeight* heightMatrix + spacing);
         GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, cellHeight * heightMatrix + spacing);
-        Debug.Log(bg.GetComponent<RectTransform>().sizeDelta);
+		// offsets
+		RectOffset offsets = new RectOffset (0, 0, spacing, 0);
+		GameMatrix.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
+		bg.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
 
         // use the existing column to create all of them
         GameObject colPrefab = GameMatrix.transform.GetChild(0).gameObject;
@@ -104,9 +107,10 @@ public class BoardController : MonoBehaviour{
             StartCoroutine(OnColorTouchDeath(tile.type));
             return;
         }
-            tile.columnNumber = column;
-            tile.transform.SetParent(columns[column], false);
-            tile.transform.SetAsLastSibling(); // bottom
+        tile.columnNumber = column;
+        tile.transform.SetParent(columns[column], false);
+        tile.transform.SetAsLastSibling(); // bottom
+		tile.RefreshDisplayText();
 
     }
 

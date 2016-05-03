@@ -69,8 +69,6 @@ public class Tile : MonoBehaviour {
 		panelControllerFather = GetComponentInParent<BoardController> ();
         //textUI.text = this.type;
         RefreshDisplayText();
-
-
     }
 
     public void SetColor(Color c) {
