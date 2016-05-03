@@ -34,12 +34,17 @@ public class BoardController : MonoBehaviour{
         tilesInHand = new List<Tile>();
 
         // set the whole layout
-		cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
+        // size of one square cell
+        GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, GameMatrix.GetComponent<RectTransform>().sizeDelta.y);
+        cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
 		cellHeight = cellWidth;
+
         bg.GetComponent<RectTransform>().sizeDelta = new Vector2(-2*spacing, cellHeight* heightMatrix + spacing);
+        //GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, cellHeight * heightMatrix + spacing);
         GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, cellHeight * heightMatrix + spacing);
-		// offsets
-		RectOffset offsets = new RectOffset (0, 0, spacing, 0);
+
+        // offsets
+        RectOffset offsets = new RectOffset (0, 0, spacing, 0);
 		GameMatrix.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
 		bg.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
 
