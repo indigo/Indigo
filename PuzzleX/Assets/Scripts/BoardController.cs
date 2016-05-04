@@ -6,11 +6,15 @@ using System.Collections.Generic;
 
 public class BoardController : MonoBehaviour{
 
-    // visual references
+    // gameplay things
     public int width = 1;
     public int heightMatrix;
+    public int matchQTY = 3;
+    public int nbrColor = 4;
+    // visual references
     public int spacing = 10;
     public Transform bg;
+
     private int cellWidth;
     private int cellHeight;
 
@@ -37,7 +41,8 @@ public class BoardController : MonoBehaviour{
         // size of one square cell
         GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, GameMatrix.GetComponent<RectTransform>().sizeDelta.y);
         cellWidth = (int)(GameMatrix.transform.GetComponent<RectTransform>().rect.width/width);
-		cellHeight = cellWidth;
+        Vector3[] corners = new Vector3[4];
+        cellHeight = cellWidth;
 
         bg.GetComponent<RectTransform>().sizeDelta = new Vector2(-2*spacing, cellHeight* heightMatrix + spacing);
         //GameMatrix.GetComponent<RectTransform>().sizeDelta = new Vector2(-2 * spacing, cellHeight * heightMatrix + spacing);
@@ -48,9 +53,18 @@ public class BoardController : MonoBehaviour{
 		GameMatrix.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
 		bg.GetComponent<HorizontalLayoutGroup> ().padding = offsets;
 
+        // test
+        GameMatrix.GetComponent<RectTransform>().GetWorldCorners(corners);
+//        for (int i = 0; i < 4; i++)
+  //      {
+            Debug.Log((corners[2].x - corners[0].x)/width + ", " + (corners[2].y - corners[0].y)/heightMatrix);
+    //    }
+
+
         // use the existing column to create all of them
         GameObject colPrefab = GameMatrix.transform.GetChild(0).gameObject;
 		colPrefab.GetComponent<LayoutElement> ().preferredWidth = cellWidth;
+
         columns = new List<Transform>();
         for (int i = 0; i < width; ++i)
         {
@@ -102,7 +116,7 @@ public class BoardController : MonoBehaviour{
 	}
 
     public IEnumerator AddOneInColumn(int column) {
-        Tile tile = Tile.CreateTile(cellHeight);
+        Tile tile = Tile.CreateTile(cellHeight, nbrColor);
         tile.rowNumber = columns[column].childCount;
 
         if (tile.rowNumber > heightMatrix - 1)
@@ -141,7 +155,7 @@ public class BoardController : MonoBehaviour{
 	public IEnumerator OnDrop(Column sourceColumn, Column destColumn){
 		if (sourceColumn != destColumn) {
 			List<Tile> connectedTiles = GetConnectedTiles (destColumn.transform.GetChild(destColumn.transform.childCount - 1).GetComponent<Tile>());
-			if (connectedTiles.Count >= 3){
+			if (connectedTiles.Count >= matchQTY){
 				for (int i = 0; i < connectedTiles.Count; i++) {
 					yield return StartCoroutine(connectedTiles[i].FadeOut());
                 }

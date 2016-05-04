@@ -53,14 +53,14 @@ public class Tile : MonoBehaviour {
 		}
 	}
 
-	public static Tile CreateTile(int height) {
+	public static Tile CreateTile(int height, int range) {
         GameObject prefab = Resources.Load("Tile") as GameObject;
         Tile t =Instantiate<GameObject>(prefab).GetComponent<Tile>();
         Count++;
 		t.textUI.text = "" ;
         t.GetComponent<LayoutElement>().preferredHeight = height;
         t.GetComponent<LayoutElement>().preferredWidth = height;
-        t.type = Random.Range(0, 5);
+        t.type = Random.Range(0, range);
         t.SetColor(ColorManager.Instance.GetColor(t.type));
         return t;
     }
