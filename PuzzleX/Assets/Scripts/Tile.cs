@@ -90,8 +90,9 @@ public class Tile : MonoBehaviour {
 		//textUI.text = displayText;
 	}
 
-	public void FadeOut(){
+	public IEnumerator FadeOut(){
 		iTween.FadeTo(gameObject,iTween.Hash("alpha",0f,"time",.2f, "oncomplete", "FadeOutComplete"));
+        yield return new WaitForSeconds(0.1f);
 	}
 
 	public void FadeOutComplete(){

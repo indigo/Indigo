@@ -72,9 +72,8 @@ public class BoardController : MonoBehaviour{
 
 	IEnumerator Restart(){
 		// Populate Test tiles
-		CleanColumns ();
-		yield return new WaitForEndOfFrame();
-		StartCoroutine( AddNInLineAtRandom (4));
+		yield return StartCoroutine( CleanColumns ());
+		yield return StartCoroutine( AddNInLineAtRandom (4));
         interfaceManager.ClearCounter ();
 	}
 
@@ -97,20 +96,19 @@ public class BoardController : MonoBehaviour{
         }
         l.Sort();
         for (int j = 0 ; j < qty  ; ++j){
-            AddOneInColumn(l[j]);
+            yield return StartCoroutine ( AddOneInColumn(l[j]));
             yield return new WaitForSeconds(.2f);
         }
 	}
 
-    public void AddOneInColumn(int column) {
+    public IEnumerator AddOneInColumn(int column) {
         Tile tile = Tile.CreateTile(cellHeight);
         tile.rowNumber = columns[column].childCount;
 
         if (tile.rowNumber > heightMatrix - 1)
         {
             Debug.Log("Death on Add with type : " + tile.type);
-            StartCoroutine(OnColorTouchDeath(tile.type));
-            return;
+            yield return StartCoroutine(OnColorTouchDeath(tile.type));
         }
         tile.columnNumber = column;
         tile.transform.SetParent(columns[column], false);
@@ -120,14 +118,15 @@ public class BoardController : MonoBehaviour{
     }
 
     // erase all tiles in each column
-    public void CleanColumns(){
+    public IEnumerator CleanColumns(){
 		for (int i = 0; i < width; ++i) 
 		{
 			for (int t = 0; t < columns [i].childCount; t++) {
 				Destroy (columns [i].GetChild (t).gameObject);
 			}
 		}
-	}
+        yield return new WaitForEndOfFrame();
+    }
 
     public IEnumerator OnColorTouchDeath(int type) {
         List<Tile> tilesOfType = getTilesOfType(type);
@@ -144,8 +143,7 @@ public class BoardController : MonoBehaviour{
 			List<Tile> connectedTiles = GetConnectedTiles (destColumn.transform.GetChild(destColumn.transform.childCount - 1).GetComponent<Tile>());
 			if (connectedTiles.Count >= 3){
 				for (int i = 0; i < connectedTiles.Count; i++) {
-					connectedTiles[i].FadeOut();
-                    yield return new WaitForSeconds(.02f);
+					yield return StartCoroutine(connectedTiles[i].FadeOut());
                 }
                 interfaceManager.AddCounter(NPremierEntier(connectedTiles.Count));
             }

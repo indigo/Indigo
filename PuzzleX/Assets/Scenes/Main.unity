@@ -401,7 +401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 7
   heightMatrix: 10
-  spacing: 200
+  spacing: 50
   bg: {fileID: 1664275745}
   GameMatrix: {fileID: 1087808586}
   Hud: {fileID: 229205795}
@@ -572,8 +572,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 110}
+  m_AnchoredPosition: {x: 0, y: -14}
+  m_SizeDelta: {x: -32, y: 96}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &885376934
 MonoBehaviour:
@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25302768, g: 0.3555363, b: 0.44117647, a: 1}
+  m_Color: {r: 0.054119796, g: 0.07671292, b: 0.09558821, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
