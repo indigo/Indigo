@@ -117,8 +117,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 20, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 56, y: -11}
+  m_SizeDelta: {x: 356, y: 23}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &14473042
 MonoBehaviour:
@@ -152,7 +152,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Reach Combo 2
+  m_Text: 'LVL 5 : Do 10T to reach '
 --- !u!222 &14473043
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -403,7 +403,7 @@ MonoBehaviour:
   heightMatrix: 10
   matchQTY: 4
   nbrColor: 4
-  spacing: 50
+  spacing: 25
   bg: {fileID: 1664275745}
   GameMatrix: {fileID: 1087808586}
   Hud: {fileID: 229205795}
@@ -589,7 +589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.054119796, g: 0.07671292, b: 0.09558821, a: 1}
+  m_Color: {r: 0.2509804, g: 0.3529412, b: 0.43921572, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -728,9 +728,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   c0: {r: 0.65905285, g: 0.77205884, b: 0.25546065, a: 1}
   c1: {r: 0.9058824, g: 0.29803923, b: 0.23529413, a: 1}
-  c2: {r: 0.9044118, g: 0.9044118, b: 0.9044118, a: 1}
+  c2: {r: 1, g: 0.7315859, b: 0.25735295, a: 1}
   c3: {r: 0.20392159, g: 0.59607846, b: 0.8588236, a: 1}
-  c4: {r: 1, g: 0.7315859, b: 0.25735295, a: 1}
+  c4: {r: 0.9044118, g: 0.9044118, b: 0.9044118, a: 1}
 --- !u!4 &1220940995
 Transform:
   m_ObjectHideFlags: 0
