@@ -8,6 +8,11 @@ public class Tile : MonoBehaviour {
     static int Count = 0;
 	BoardController panelControllerFather;
 
+	// state flags
+	public bool moving = false;
+	public bool dirty = false;
+	public bool deleteFlag = false;
+
 	public Text textUI;
     public Image theImage;
 
@@ -87,16 +92,15 @@ public class Tile : MonoBehaviour {
 
 	public void RefreshDisplayText(){
 		displayText = ""+ columnNumber + " " + rowNumber;
-		//textUI.text = displayText;
+		textUI.text = displayText;
 	}
 
-	public IEnumerator FadeOut(){
-		iTween.FadeTo(gameObject,iTween.Hash("alpha",0f,"time",.2f, "oncomplete", "FadeOutComplete"));
-        yield return new WaitForSeconds(0.1f);
+	public void FadeOut(float time){
+		iTween.FadeTo(gameObject,iTween.Hash("alpha",0f,"time",time, "oncomplete", "FadeOutComplete"));
 	}
 
 	public void FadeOutComplete(){
-		panelControllerFather.DestroyTile (this);
+		//panelControllerFather.DestroyTile (this);
 	}
 
 	public override string ToString(){

@@ -78,7 +78,7 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 		{
 			tilesInHand[i].SetSelected(true);
 		}
-		StartCoroutine( panelControllerFather.OnDrop (this, currentColumn));
+		StartCoroutine( panelControllerFather.OnDrop (this, currentColumn, tilesInHand));
 	}
 
 	public void OnPointerEnter(PointerEventData ped)
