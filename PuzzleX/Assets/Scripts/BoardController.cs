@@ -27,7 +27,10 @@ public class BoardController : MonoBehaviour{
     public List<Tile> tilesInHand;
     private List<Transform> columns;
 
-    
+    // state flags
+    private bool movedFlag = false;
+    private bool destroyFlag = false;
+
 
     public void Awake() {
         interfaceManager = Hud.GetComponent<InterfaceManager>();
@@ -195,18 +198,28 @@ public class BoardController : MonoBehaviour{
 			for (int i = 0; i < tiles.Count; i++) {
 				tiles [i].moving = true;
 				tiles [i].dirty = true;
+                movedFlag = true;
 			}
-		}
-		yield return MovingTiles ();
-		yield return new WaitForSeconds (.5f);
-		yield return NextTurn ();
+            //
+            for (; movedFlag == true; Debug.Log ("Loop"))
+            {
+                yield return StartCoroutine(MovingTiles());
+                if (destroyFlag) {
+                    yield return StartCoroutine(DestroySequence());
+                    //yield return new WaitForSeconds(.3f);
+                }
+            }
+            yield return new WaitForSeconds(.3f);
+            yield return NextTurn ();
+        }
 
-	}
+    }
 
-	public IEnumerator MovingTiles(){
-		// while tiles are not arrived move them
-		// if tile has arrived to destination remove the moving tag
-		yield return new WaitForEndOfFrame();
+    public IEnumerator MovingTiles(){
+        // while tiles are not arrived move them
+        // if tile has arrived to destination remove the moving tag
+        Debug.Log("start moving");
+        yield return new WaitForEndOfFrame();
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < columns [col].childCount; row++) {
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
@@ -216,10 +229,8 @@ public class BoardController : MonoBehaviour{
 			}
 		}
 
-
-
 		// for each dirty tiles GetConnectedTiles
-		bool destroyFlag = false;
+		//destroyFlag = false;
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < columns [col].childCount; row++) {
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
@@ -240,26 +251,25 @@ public class BoardController : MonoBehaviour{
 				}
 			}
 		}
-		// add new deletion tag or remove dirty tag
+        // release
+        movedFlag = false;
+        Debug.Log("end moving " + movedFlag + " " + destroyFlag);
+        // add new deletion tag or remove dirty tag
+    }
 
-		// start destroySequence
-		if (destroyFlag) {
-			StartCoroutine (DestroySequence ());
-		}
-	}
-		
-	// destroySequence
-	//
-	// on all deletion tagged turn alpha off on .5 seconds
-	// wait .5 seconds
-	// tag all tiles that are impacted by deletion with the moving tag and the dirty tag
-	// detroy all tile with deletion tag 
-	// wait end of frame
-	// start the movingSequence
+    // destroySequence
+    //
+    // on all deletion tagged turn alpha off on .5 seconds
+    // wait .5 seconds
+    // tag all tiles that are impacted by deletion with the moving tag and the dirty tag
+    // detroy all tile with deletion tag 
+    // wait end of frame
+    // start the movingSequence
 
-	public IEnumerator DestroySequence(){
-		bool movedFlag = false;
-		for (int col = 0; col < width; col++) {
+    public IEnumerator DestroySequence(){
+        Debug.Log("start destroy " + movedFlag + " " + destroyFlag);
+
+        for (int col = 0; col < width; col++) {
 			bool dirtyFlag = false;
 			for (int row = 0; row < columns [col].childCount; row++) {
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
@@ -281,14 +291,14 @@ public class BoardController : MonoBehaviour{
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
 				if (tile.deleteFlag){
 					Destroy (tile.gameObject);
-					//yield return new WaitForEndOfFrame ();
 				}
 			}
 		}
-		if (movedFlag) {
-			StartCoroutine (MovingTiles ());
-		}
-	}
+        // release
+        yield return new WaitForEndOfFrame();
+        destroyFlag = false;
+        Debug.Log("end destroy " + movedFlag + " " + destroyFlag);
+    }
 
     public int NPremierEntier(int n) {
         return n * (1 + n) / 2;
