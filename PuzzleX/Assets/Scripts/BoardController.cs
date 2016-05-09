@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+
 public class BoardController : MonoBehaviour{
 
     // gameplay things
@@ -23,6 +24,8 @@ public class BoardController : MonoBehaviour{
 
     public GameObject Hud;
     private InterfaceManager interfaceManager;
+    private StatsManager statsManager;
+
     // shouldn't be public
     public List<Tile> tilesInHand;
     private List<Transform> columns;
@@ -34,6 +37,7 @@ public class BoardController : MonoBehaviour{
 
     public void Awake() {
         interfaceManager = Hud.GetComponent<InterfaceManager>();
+        statsManager = GetComponent<StatsManager>() ;
     }
 
     public void Start()
@@ -87,8 +91,9 @@ public class BoardController : MonoBehaviour{
     }
 
 	IEnumerator Restart(){
-		// Populate Test tiles
-		yield return StartCoroutine( CleanColumns ());
+        // Populate Test tiles
+        statsManager.StartNewGameSession();
+        yield return StartCoroutine( CleanColumns ());
 		yield return StartCoroutine( NextTurn ());
         interfaceManager.ClearCounter ();
 	}
@@ -172,7 +177,6 @@ public class BoardController : MonoBehaviour{
 
     public IEnumerator OnColorTouchDeath(int type) {
         List<Tile> tilesOfType = getTilesOfType(type);
-        // should delete the tiles in hand too
         for (int i = 0; i < tilesOfType.Count; i++) {
 			tilesOfType [i].deleteFlag = true;
         }
@@ -183,7 +187,10 @@ public class BoardController : MonoBehaviour{
 				tile.dirty = false;
 			}
 		}
-		interfaceManager.ClearCounter();
+        //Analytics.CustomEvent("gameOver",statsManager.GetCurrentGameSessionDictionnary());
+        statsManager.EndCurrentGameSessionData();
+        statsManager.StartNewGameSession();
+        interfaceManager.ClearCounter();
     }
 
 	// TBD handle multiple col deaths
@@ -199,48 +206,28 @@ public class BoardController : MonoBehaviour{
 
 	public IEnumerator OnDrop(Column sourceColumn, Column destColumn, List<Tile> tiles){
 		if (sourceColumn != destColumn) {
-
-			/*
-
-			List<Tile> connectedTiles = GetConnectedTiles (destColumn.transform.GetChild(destColumn.transform.childCount - 1).GetComponent<Tile>());
-			if (connectedTiles.Count >= matchQTY){
-				for (int i = 0; i < connectedTiles.Count; i++) {
-					connectedTiles[i].FadeOut(0.5f);
-                }
-                interfaceManager.AddCounter(NPremierEntier(connectedTiles.Count));
-            }
-			yield return new WaitForSeconds (0.2f);
-			yield return StartCoroutine( NextTurn());
-			*/
 			for (int i = 0; i < tiles.Count; i++) {
 				tiles [i].moving = true;
 				tiles [i].dirty = true;
                 movedFlag = true;
 			}
             //
-			Debug.Log(" DROP ");
             for (; movedFlag == true; Debug.Log ("Loop"))
             {
-				Debug.Log("start moving");
                 yield return StartCoroutine(MovingTiles());
-				Debug.Log("start checks");
 				yield return StartCoroutine (CheckMatches ());
                 if (destroyFlag) {
-					Debug.Log("start destroy");
                     yield return StartCoroutine(DestroySequence());
                     //yield return new WaitForSeconds(.3f);
                 }
             }
             yield return new WaitForSeconds(.3f);
-			Debug.Log("start next turn");
             yield return NextTurn ();
 			yield return StartCoroutine (CheckForDeath ());
         }
     }
 
     public IEnumerator MovingTiles(){
-        // while tiles are not arrived move them
-        // if tile has arrived to destination remove the moving tag
         yield return new WaitForEndOfFrame();
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < columns [col].childCount; row++) {
@@ -253,11 +240,9 @@ public class BoardController : MonoBehaviour{
 			}
 		}
 		movedFlag = false;
-		//Debug.Log("end moving " + movedFlag + " " + destroyFlag);
-
-		// for each dirty tiles GetConnectedTiles
-		//destroyFlag = false;
 	}
+
+
 	public IEnumerator CheckMatches(){
 		yield return new WaitForEndOfFrame ();
 		for (int col = 0; col < width; col++) {
@@ -271,7 +256,9 @@ public class BoardController : MonoBehaviour{
 					List<Tile> connectedTiles = GetConnectedTiles (tile);
 					// if there is a Match for this tile
 					if (connectedTiles.Count >= matchQTY) {
-						interfaceManager.AddCounter (NPremierEntier (connectedTiles.Count));
+                        int scoreDelta = NPremierEntier(connectedTiles.Count);
+                        statsManager.UpdateIntSessionInfo("score", scoreDelta);
+                        interfaceManager.AddCounter (NPremierEntier (connectedTiles.Count));
 						for (int i = 0; i < connectedTiles.Count; i++) {
 							connectedTiles [i].deleteFlag = true;
 							connectedTiles [i].dirty = true;
