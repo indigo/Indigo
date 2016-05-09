@@ -10,7 +10,18 @@ public class Tile : MonoBehaviour {
 
 	// state flags
 	public bool moving = false;
-	public bool dirty = false;
+
+	private bool _dirty = false;
+	public bool dirty{
+		get { 
+			return _dirty;
+		}	
+		set { 
+			SetSelected (!value);
+			_dirty = value;
+		}
+	}
+
 	public bool deleteFlag = false;
 
 	public Text textUI;
@@ -79,20 +90,20 @@ public class Tile : MonoBehaviour {
     public void SetColor(Color c) {
         theImage.color = c;
     }
-    public void SetSelected(bool b) {
+	public void SetSelected(bool b, int alpha=180) {
         // false makes it a bit transparent
         if (theImage != null)
         {
             Color32 savedColor = theImage.color;
             byte alphaValue = 255;
-            if (!b) { alphaValue = 180; }
+			if (!b) { alphaValue = (byte)alpha; }
             theImage.color = new Color32(savedColor.r, savedColor.g, savedColor.b, alphaValue);
         }
     }
 
 	public void RefreshDisplayText(){
 		displayText = ""+ columnNumber + " " + rowNumber;
-		textUI.text = displayText;
+		//textUI.text = displayText;
 	}
 
 	public void FadeOut(float time){

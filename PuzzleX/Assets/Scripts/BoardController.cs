@@ -174,11 +174,28 @@ public class BoardController : MonoBehaviour{
         List<Tile> tilesOfType = getTilesOfType(type);
         // should delete the tiles in hand too
         for (int i = 0; i < tilesOfType.Count; i++) {
-			Destroy(tilesOfType[i].gameObject);
-            yield return 0;
+			tilesOfType [i].deleteFlag = true;
         }
-        interfaceManager.ClearCounter();
+		yield return DestroySequence();
+		for (int col = 0; col < width; col++) {
+			for (int row = 0; row < columns [col].childCount; row++) {
+				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
+				tile.dirty = false;
+			}
+		}
+		interfaceManager.ClearCounter();
     }
+
+	// TBD handle multiple col deaths
+	public IEnumerator CheckForDeath(){
+		yield return new WaitForEndOfFrame();
+		for (int col = 0; col < width; col++) {
+			if (columns[col].childCount > heightMatrix ){
+				Tile culprit = columns [col].GetChild (columns [col].childCount - 1).GetComponent<Tile> ();
+				yield return OnColorTouchDeath(culprit.type);
+			}
+		}
+	}
 
 	public IEnumerator OnDrop(Column sourceColumn, Column destColumn, List<Tile> tiles){
 		if (sourceColumn != destColumn) {
@@ -201,49 +218,73 @@ public class BoardController : MonoBehaviour{
                 movedFlag = true;
 			}
             //
+			Debug.Log(" DROP ");
             for (; movedFlag == true; Debug.Log ("Loop"))
             {
+				Debug.Log("start moving");
                 yield return StartCoroutine(MovingTiles());
+				Debug.Log("start checks");
+				yield return StartCoroutine (CheckMatches ());
                 if (destroyFlag) {
+					Debug.Log("start destroy");
                     yield return StartCoroutine(DestroySequence());
                     //yield return new WaitForSeconds(.3f);
                 }
             }
             yield return new WaitForSeconds(.3f);
+			Debug.Log("start next turn");
             yield return NextTurn ();
+			yield return StartCoroutine (CheckForDeath ());
         }
-
     }
 
     public IEnumerator MovingTiles(){
         // while tiles are not arrived move them
         // if tile has arrived to destination remove the moving tag
-        Debug.Log("start moving");
         yield return new WaitForEndOfFrame();
 		for (int col = 0; col < width; col++) {
 			for (int row = 0; row < columns [col].childCount; row++) {
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
 				if (tile.moving){
 					tile.moving = false;
+					tile.rowNumber = tile.transform.GetSiblingIndex();
+					tile.RefreshDisplayText ();
 				}
 			}
 		}
+		movedFlag = false;
+		//Debug.Log("end moving " + movedFlag + " " + destroyFlag);
 
 		// for each dirty tiles GetConnectedTiles
 		//destroyFlag = false;
+	}
+	public IEnumerator CheckMatches(){
+		yield return new WaitForEndOfFrame ();
 		for (int col = 0; col < width; col++) {
-			for (int row = 0; row < columns [col].childCount; row++) {
+			for (int row = 0; row < columns [col].childCount; row++) { // ??
+				Debug.Log ("col=" + col + " row=" + row);
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
-				if (tile.dirty){
+				Debug.Log (tile.displayText);
+				// for every tile
+				if (tile.dirty && !tile.deleteFlag){
+					Debug.Log ("is dirty and not to delete");
 					List<Tile> connectedTiles = GetConnectedTiles (tile);
+					// if there is a Match for this tile
 					if (connectedTiles.Count >= matchQTY) {
+						interfaceManager.AddCounter (NPremierEntier (connectedTiles.Count));
 						for (int i = 0; i < connectedTiles.Count; i++) {
 							connectedTiles [i].deleteFlag = true;
+							connectedTiles [i].dirty = true;
+							//yield return new WaitForSeconds (.3f);
 							destroyFlag = true;
 						}
-					} else {
+					} 
+					else {
+						Debug.Log ("is not part of a match");
 						for (int i = 0; i < connectedTiles.Count; i++) {
+							Debug.Log ("clean :" + connectedTiles [i].displayText);
 							connectedTiles [i].dirty = false;
+							//yield return new WaitForSeconds (.3f);
 							connectedTiles [i].rowNumber = connectedTiles[i].transform.GetSiblingIndex();
 						}
 					
@@ -252,8 +293,6 @@ public class BoardController : MonoBehaviour{
 			}
 		}
         // release
-        movedFlag = false;
-        Debug.Log("end moving " + movedFlag + " " + destroyFlag);
         // add new deletion tag or remove dirty tag
     }
 
@@ -267,20 +306,21 @@ public class BoardController : MonoBehaviour{
     // start the movingSequence
 
     public IEnumerator DestroySequence(){
-        Debug.Log("start destroy " + movedFlag + " " + destroyFlag);
+       // Debug.Log("start destroy " + movedFlag + " " + destroyFlag);
 
         for (int col = 0; col < width; col++) {
 			bool dirtyFlag = false;
 			for (int row = 0; row < columns [col].childCount; row++) {
 				Tile tile = columns [col].GetChild (row).GetComponent<Tile> ();
-				if (tile.deleteFlag){
-					tile.FadeOut (0.5f);
-					dirtyFlag = true;
-				}
-				if (dirtyFlag) {
+				if (dirtyFlag && !tile.deleteFlag) {
 					tile.dirty = true;
 					tile.moving = true;
 					movedFlag = true;
+					Debug.Log ("something moved");
+				}
+				if (tile.deleteFlag){
+					tile.FadeOut (0.5f);
+					dirtyFlag = true;
 				}
 			}
 		}
@@ -297,7 +337,7 @@ public class BoardController : MonoBehaviour{
         // release
         yield return new WaitForEndOfFrame();
         destroyFlag = false;
-        Debug.Log("end destroy " + movedFlag + " " + destroyFlag);
+        //Debug.Log("end destroy " + movedFlag + " " + destroyFlag);
     }
 
     public int NPremierEntier(int n) {
@@ -322,7 +362,8 @@ public class BoardController : MonoBehaviour{
 		List<Tile> result = new List<Tile> ();
 		List<Tile> openList = new List<Tile> ();
 		int columnIndex = t.columnNumber;
-		Tile currentTile = columns [columnIndex].GetChild (columns [columnIndex].childCount - 1).GetComponent<Tile>();
+		//Tile currentTile = columns [columnIndex].GetChild (columns [columnIndex].childCount - 1).GetComponent<Tile>();
+		Tile currentTile = t;
 		// type is type of top of column
 		int currentType = currentTile.type;
 		// start with openlist = top of column
