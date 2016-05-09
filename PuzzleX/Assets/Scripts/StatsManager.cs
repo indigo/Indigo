@@ -34,7 +34,7 @@ public class StatsManager : MonoBehaviour
         currentGameSession = new Dictionary<string, object>();
     }
 
-    public void EndCurrentGameSessionData() {
+    public void EndCurrentGameSession() {
         int sessionTime = (int)(Time.time - gameSessionTimeStart);
         UpdateIntSessionInfo("duration", sessionTime);
         Analytics.CustomEvent("gameOver", GetCurrentGameSessionDictionnary());

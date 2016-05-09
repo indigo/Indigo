@@ -188,7 +188,7 @@ public class BoardController : MonoBehaviour{
 			}
 		}
         //Analytics.CustomEvent("gameOver",statsManager.GetCurrentGameSessionDictionnary());
-        statsManager.EndCurrentGameSessionData();
+        statsManager.EndCurrentGameSession();
         statsManager.StartNewGameSession();
         interfaceManager.ClearCounter();
     }
