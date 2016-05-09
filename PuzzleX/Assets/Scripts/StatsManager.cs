@@ -7,6 +7,10 @@ using UnityEngine.Analytics;
 public class StatsManager : MonoBehaviour
 {
 
+    // duration for a specific level
+    // levelID, #fails, average Score, 
+    // nombre de combos
+
     private Dictionary<string, object> currentGameSession;
     private float gameSessionTimeStart = 0;
 
