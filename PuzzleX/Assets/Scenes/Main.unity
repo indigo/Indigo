@@ -618,6 +618,7 @@ GameObject:
   - 114: {fileID: 855599011}
   - 114: {fileID: 855599010}
   - 114: {fileID: 855599014}
+  - 114: {fileID: 855599015}
   m_Layer: 5
   m_Name: GameCanvas
   m_TagString: Untagged
@@ -721,6 +722,17 @@ MonoBehaviour:
   GameMatrix: {fileID: 1087808586}
   Hud: {fileID: 229205795}
   tilesInHand: []
+--- !u!114 &855599015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 855599009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6eeba72f2f4ef34e89087c8600661b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &876978841
 GameObject:
   m_ObjectHideFlags: 0
