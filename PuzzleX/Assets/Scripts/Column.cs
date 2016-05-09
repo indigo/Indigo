@@ -104,9 +104,9 @@ public class Column : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
             tilesInHand[i].RefreshDisplayText();
 		}
 	}
-	public void OnPointerExit(PointerEventData ped)
-	{
-		SetHighlight (false);
+    public void OnPointerExit(PointerEventData ped)
+    {
+            SetHighlight(false);
 	}
 
 	public void SetHighlight(bool b){

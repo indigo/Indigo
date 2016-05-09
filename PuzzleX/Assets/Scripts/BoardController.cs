@@ -320,7 +320,6 @@ public class BoardController : MonoBehaviour{
 		List<Tile> result = new List<Tile> ();
 		List<Tile> openList = new List<Tile> ();
 		int columnIndex = t.columnNumber;
-		//Tile currentTile = columns [columnIndex].GetChild (columns [columnIndex].childCount - 1).GetComponent<Tile>();
 		Tile currentTile = t;
 		// type is type of top of column
 		int currentType = currentTile.type;
